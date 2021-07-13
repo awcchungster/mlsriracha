@@ -1,15 +1,22 @@
-from sriracha.interfaces.Predict import PredictInterface
+import os
+
+from mlctlsriracha.interfaces.predict import PredictInterface
 
 class AwsSageMakerPredict(PredictInterface):
 
-    def __init__(self, profile=None):
-        print('Selected Azure ML profile')
+    def __init__(self):
+        print('Selected AWS SageMaker profile')
 
-    def model(self, filename):
+    def model_artifact(self, filename: str):
         """
         The path to model artifacts.
 
-        Loads from the environmental variable that mlctl passes to Azure ML
+        Your algorithm should read all the model artifacts from this directory.
+        Amazon SageMaker copies this data as a single object in a compressed tar
+        format from the S3 location that you specified in the CreateModel config
+        request. If multiple containers in a single training job write to this
+        directory they should ensure no file/directory names clash. Amazon SageMaker
+        mounts the S3 for the user.
 
         Arguments:
             filename (str): The name of the file which will be written back to S3
@@ -17,11 +24,7 @@ class AwsSageMakerPredict(PredictInterface):
         Returns:
             path (str): The absolute path to the model output directory
         """
-        model_uri = os.environ.get('AZUREML_MODEL_DIR')
-        return os.path.join(model_uri, filename)
+        return os.path.join(os.sep, 'opt', 'ml', 'model', filename)
 
-    def endpoint_metadata():
-        return {
-            'container_port': os.getenv('AIP_HTTP_PORT'),
-            'model_id': os.getenv('AIP_DEPLOYED_MODEL_ID')
-        }
+    def endpoint_metadata(self):
+        return {}

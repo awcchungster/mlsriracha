@@ -1,15 +1,18 @@
-from sriracha.interfaces.Predict import PredictInterface
+import os
+
+from mlctlsriracha.interfaces.predict import PredictInterface
 
 class AzureMlPredict(PredictInterface):
 
-    def __init__(self, profile=None):
+    def __init__(self):
         print('Selected Azure ML profile')
 
-    def model(self, filename):
+    def model_artifact(self, filename: str):
         """
         The path to model artifacts.
 
-        Loads from the environmental variable that mlctl passes to Azure ML
+        Loads from the environmental variable set by mlctl where 
+        to retrieve the artifact from Azure ML's mount points. 
 
         Arguments:
             filename (str): The name of the file which will be written back to S3
@@ -19,3 +22,6 @@ class AzureMlPredict(PredictInterface):
         """
         model_uri = os.environ.get('AZUREML_MODEL_DIR')
         return os.path.join(model_uri, filename)
+
+    def endpoint_metadata(self):
+        return {}

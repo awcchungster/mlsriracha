@@ -1,31 +1,23 @@
-from sriracha.interfaces.TrainInterface import Train
+import os
+from pathlib import Path
+import pandas as pd
 
-class GcpVertexTrain(Train):
+from google.cloud import storage
+from google.cloud.storage.blob import Blob
+from io import StringIO
 
-    def __init__(self, profile=None):
-        print('Selected Azure ML profile')
+from mlctlsriracha.interfaces.train import TrainInterface
 
-    def getBucketNameFrom(gs_uri: str):
-        bucket_start = -1
-        for i in range(0, 2):
-            bucket_start = gs_uri.find('/', bucket_start + 1)
+class GcpVertexTrain(TrainInterface):
 
-        bucket_end = gs_uri.find('/', bucket_start + 1)
-            
-        # Printing nth occurrence
-        # print ("Nth occurrence is at", val)
+    def __init__(self):
+        """
+        Make folder paths for data, models, checkpoints
+        """
+        print('Selected GCP Vertex profile')
+        Path('/opt/ml/model/').mkdir(parents=True, exist_ok=True)
 
-        bucket = gs_uri[bucket_start + 1: bucket_end]
-        
-
-        prefix = gs_uri[bucket_end + 1: len(gs_uri)]
-
-        # chop off '/' at the end
-        if prefix[len(prefix)-1: len(prefix)] == '/':
-            prefix = prefix[0: len(prefix) - 1] 
-        return bucket, prefix
-
-    def input_as_dataframe(channel: str):
+    def input_as_dataframe(self, channel='training'):
         """
         The function returns a dataframe for the input channel artifacts.
 
@@ -41,6 +33,26 @@ class GcpVertexTrain(Train):
             path (str): The absolute path to the specified channel file
         """
 
+        def get_bucket_name_from(gs_uri):
+            bucket_start = -1
+            for i in range(0, 2):
+                bucket_start = gs_uri.find('/', bucket_start + 1)
+
+            bucket_end = gs_uri.find('/', bucket_start + 1)
+                
+            # Printing nth occurrence
+            # print ("Nth occurrence is at", val)
+
+            bucket = gs_uri[bucket_start + 1: bucket_end]
+            
+
+            prefix = gs_uri[bucket_end + 1: len(gs_uri)]
+
+            # chop off '/' at the end
+            if prefix[len(prefix)-1: len(prefix)] == '/':
+                prefix = prefix[0: len(prefix) - 1] 
+            return bucket, prefix
+
         data_directories = {
             'training': "AIP_TRAINING_DATA_URI",
             'validation': "AIP_VALIDATION_DATA_URI",
@@ -52,7 +64,7 @@ class GcpVertexTrain(Train):
             gs_uri = os.getenv(data_directories[channel])
             storage_client = storage.Client()
 
-            bucket, prefix=getBucketNameFrom(gs_uri)
+            bucket, prefix=get_bucket_name_from(gs_uri)
             # chop off * for wildcard
             prefix = prefix.replace('*', '')
             print(f'bucket_name={bucket}')
@@ -72,10 +84,10 @@ class GcpVertexTrain(Train):
             frame = pd.concat(fileBytes, axis=0, ignore_index=True)     
             return frame
         else:
-            print('Incorrect data channel type. Options are training, validation, and testing.')
+            raise ValueError('Incorrect data channel type. Options are training, validation, and testing.')
             return null
     
-    def log_artifact(filename):
+    def log_artifact(self, filename=''):
         """
         The path to the output artifacts.
 
@@ -90,13 +102,13 @@ class GcpVertexTrain(Train):
         """
         return os.path.join(os.sep, 'opt', 'ml', 'model', filename)
 
-    def finish():
+    def finish(self):
         """
         Copies files in local model directory to google storage
         """
         storage_client = storage.Client()
         bucket_uri = os.getenv('AIP_MODEL_DIR')
-        bucket_name, prefix = getBucketNameFrom(bucket_uri)
+        bucket_name, prefix = get_bucket_name_from(bucket_uri)
         # blob = bucket.blob('model.pkl')
         # artifact = f'{bucket_uri}/model.pkl'
 

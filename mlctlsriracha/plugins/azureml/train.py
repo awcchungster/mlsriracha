@@ -6,10 +6,11 @@ from mlctlsriracha.interfaces.train import TrainInterface
 
 class AzureMlTrain(TrainInterface):
 
-    def __init__(self, profile=None):
-        print('Selected Azure ML profile')
+    def __init__(self):
+        print('Using Azure ML Sriracha profile')
+        Path('./outputs/model').mkdir(parents=True, exist_ok=True)
 
-    def input_as_dataframe(self, channel):
+    def input_as_dataframe(self, channel='training'):
         """
         The path to input artifacts.
 
@@ -41,7 +42,7 @@ class AzureMlTrain(TrainInterface):
             print('Incorrect data channel type. Options are training, validation, and testing.')
             return null
     
-    def log_artifact(self, filename):
+    def log_artifact(self, filename=''):
         """
         The path to the output artifacts.
 
@@ -55,8 +56,7 @@ class AzureMlTrain(TrainInterface):
             path (str): The absolute path to the model output directory
         """
         cwd = os.getcwd()
-        Path('./outputs/model').mkdir(parents=True, exist_ok=True)
         return os.path.join(cwd, 'outputs', 'model', filename)
 
-    def finish():
+    def finish(self):
         pass

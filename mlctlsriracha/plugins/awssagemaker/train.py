@@ -1,38 +1,25 @@
-from sriracha.interfaces.TrainInterface import Train
+import pandas as pd
+import os
+import glob
+from pathlib import Path
 
-class AwsSageMakerTrain(Train):
+from mlctlsriracha.interfaces.train import TrainInterface
 
-    def __init__(self, profile=None):
-        print('Selected Azure ML profile')
+class AwsSageMakerTrain(TrainInterface):
 
-    def getBucketNameFrom(gs_uri: str):
-        bucket_start = -1
-        for i in range(0, 2):
-            bucket_start = gs_uri.find('/', bucket_start + 1)
+    def __init__(self):
+        print('Selected AWS SageMaker ML profile')
+        Path('/opt/ml/model').mkdir(parents=True, exist_ok=True)
 
-        bucket_end = gs_uri.find('/', bucket_start + 1)
-            
-        # Printing nth occurrence
-        # print ("Nth occurrence is at", val)
 
-        bucket = gs_uri[bucket_start + 1: bucket_end]
-        
-
-        prefix = gs_uri[bucket_end + 1: len(gs_uri)]
-
-        # chop off '/' at the end
-        if prefix[len(prefix)-1: len(prefix)] == '/':
-            prefix = prefix[0: len(prefix) - 1] 
-        return bucket, prefix
-
-    def inputAsDataframe(channel: str):
+    def input_as_dataframe(self, channel='training'):
         """
-        The function returns a dataframe for the input channel artifacts.
+        The function returns a panda dataframe for the input channel artifacts.
 
-        GCP Vertex allows you to create a dataset that will be split into 
-        train, test, and validation "channels" when loaded into your training run.
-        This function handles merging the file structure that Vertex 
-        exposes to the training container.
+        AWS SageMaker passes all values in FileMode from the S3 bucket into the 
+        train, test, and validation "channels" when starting your container.
+        This function takes in the channel and merges all CSV files per channel
+        into a dataframe for reading.
 
         Arguments:
             channel (str): The name of the channel which contains the given filename
@@ -42,40 +29,29 @@ class AwsSageMakerTrain(Train):
         """
 
         data_directories = {
-            'training': "AIP_TRAINING_DATA_URI",
-            'validation': "AIP_VALIDATION_DATA_URI",
-            'testing': "AIP_TEST_DATA_URI"
+            'training',
+            'validation',
+            'testing'
         }
 
         if channel in data_directories:
-            print(f'Retrieving {channel} directory')
-            gs_uri = os.getenv(data_directories[channel])
-            storage_client = storage.Client()
 
-            bucket, prefix=getBucketNameFrom(gs_uri)
-            # chop off * for wildcard
-            prefix = prefix.replace('*', '')
-            print(f'bucket_name={bucket}')
-            print(f'prefix={prefix}')
-            # Note: Client.list_blobs requires at least package version 1.17.0.
-            blobs = storage_client.list_blobs(bucket, prefix=prefix)
-            # print(f'blobs: {blobs}')
+            csv_files = glob.glob(os.path.join(f'/opt/ml/input/data/{channel}/*.csv'))
+            print(f'Files in {channel} directory: {csv_files}')
+            # loop over the list of csv files
             fileBytes = []
-            for blob in blobs:
-                print(f'blob.name: {blob.name}')
-                # assumes CSV files
-                s=str(blob.download_as_bytes(),'utf-8')
-                data = StringIO(s) 
-                df=pd.read_csv(data)
+            for f in csv_files:
+        
+                # read the csv file
+                df = pd.read_csv(f)
                 fileBytes.append(df)
-
             frame = pd.concat(fileBytes, axis=0, ignore_index=True)     
-            return frame
+            return frame 
         else:
-            print('Incorrect data channel type. Options are training, validation, and testing.')
+            raise ValueError('Incorrect data channel type. Options are training, validation, and testing.')
             return null
     
-    def log_artifact(filename):
+    def log_artifact(self, filename=''):
         """
         The path to the output artifacts.
 
@@ -94,5 +70,5 @@ class AwsSageMakerTrain(Train):
         """
         return os.path.join(os.sep, 'opt', 'ml', 'model', filename)
 
-    def finish():
+    def finish(self):
         pass
