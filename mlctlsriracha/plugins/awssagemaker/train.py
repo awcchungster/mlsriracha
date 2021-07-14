@@ -11,7 +11,6 @@ class AwsSageMakerTrain(TrainInterface):
         print('Selected AWS SageMaker ML profile')
         Path('/opt/ml/model').mkdir(parents=True, exist_ok=True)
 
-
     def input_as_dataframe(self, channel='training'):
         """
         The function returns a panda dataframe for the input channel artifacts.
@@ -71,4 +70,4 @@ class AwsSageMakerTrain(TrainInterface):
         return os.path.join(os.sep, 'opt', 'ml', 'model', filename)
 
     def finish(self):
-        pass
+        return True

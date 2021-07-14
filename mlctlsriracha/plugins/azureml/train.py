@@ -59,4 +59,4 @@ class AzureMlTrain(TrainInterface):
         return os.path.join(cwd, 'outputs', 'model', filename)
 
     def finish(self):
-        pass
+        return True

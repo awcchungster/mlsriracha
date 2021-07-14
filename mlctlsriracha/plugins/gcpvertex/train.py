@@ -117,3 +117,5 @@ class GcpVertexTrain(TrainInterface):
             print(filename)
             blob = bucket.blob(prefix + '/' + filename)
             blob.upload_from_filename('/opt/ml/model/' + filename)
+        
+        return True
