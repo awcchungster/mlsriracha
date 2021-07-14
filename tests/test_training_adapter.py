@@ -25,7 +25,7 @@ class TestTrainingAdapter(unittest.TestCase):
                 mock_glob.return_value = ['./static/data/data.csv']
                 plugin = AwsSageMakerTrain()
                
-                response = plugin.input_as_dataframe()
+                response = plugin.input_as_dataframe(channel='training')
                 # print(response.size)
                 self.assertTrue(response.size == 15)
 
@@ -45,6 +45,26 @@ class TestTrainingAdapter(unittest.TestCase):
         
         response = plugin.finish()
         self.assertTrue(response)
+
+    def test_azureml_data(self):
+         with mock.patch('mlctlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
+            with mock.patch('mlctlsriracha.plugins.azureml.train.os.environ.get', autospec=True) as mock_env:
+                mock_mkdir.return_value = True
+                mock_env.return_value = './static/data/data.csv'
+                plugin = AzureMlTrain()
+               
+                response = plugin.input_as_dataframe(channel='training')
+                # print(response.size)
+                self.assertTrue(response.size == 15)
+
+    def test_azureml_folder(self):
+         with mock.patch('mlctlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
+                mock_mkdir.return_value = True
+                plugin = AzureMlTrain()
+               
+                response = plugin.log_artifact('model.pkl')
+                print(response)
+                self.assertTrue(response.find('/outputs/model/model.pkl') != -1)
 
     # def test_gcpvertex_plugin(self):
     #     plugin = AwsSageMakerTrain()
