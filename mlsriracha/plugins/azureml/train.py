@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from pathlib import Path
 
-from mlctlsriracha.interfaces.train import TrainInterface
+from mlsriracha.interfaces.train import TrainInterface
 
 class AzureMlTrain(TrainInterface):
 

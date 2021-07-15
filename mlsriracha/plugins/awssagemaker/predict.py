@@ -1,6 +1,6 @@
 import os
 
-from mlctlsriracha.interfaces.predict import PredictInterface
+from mlsriracha.interfaces.predict import PredictInterface
 
 class AwsSageMakerPredict(PredictInterface):
 

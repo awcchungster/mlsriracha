@@ -1,4 +1,3 @@
-import os
 
 class PredictInterface:
     def init(self, provider: str):

@@ -1,16 +1,16 @@
 from unittest import mock
 import unittest
 
-from mlctlsriracha.plugins.azureml.train import AzureMlTrain
-from mlctlsriracha.plugins.gcpvertex.train import GcpVertexTrain
-from mlctlsriracha.plugins.awssagemaker.train import AwsSageMakerTrain
+from mlsriracha.plugins.azureml.train import AzureMlTrain
+from mlsriracha.plugins.gcpvertex.train import GcpVertexTrain
+from mlsriracha.plugins.awssagemaker.train import AwsSageMakerTrain
 
 
 class TestTrainingAdapter(unittest.TestCase):
 
-    # @mock.patch('mlctlsriracha.plugins.awssagemaker.train.Path.mkdir', return_value=[Tru])
+    # @mock.patch('mlsriracha.plugins.awssagemaker.train.Path.mkdir', return_value=[Tru])
     def test_awssagemaker_plugin(self):
-        with mock.patch('mlctlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
+        with mock.patch('mlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
             mock_mkdir.return_value = True
             plugin = AwsSageMakerTrain()
             
@@ -19,8 +19,8 @@ class TestTrainingAdapter(unittest.TestCase):
     
     
     def test_awssagemaker_data(self):
-         with mock.patch('mlctlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
-            with mock.patch('mlctlsriracha.plugins.awssagemaker.train.glob.glob', autospec=True) as mock_glob:
+         with mock.patch('mlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
+            with mock.patch('mlsriracha.plugins.awssagemaker.train.glob.glob', autospec=True) as mock_glob:
                 mock_mkdir.return_value = True
                 mock_glob.return_value = ['./static/data/data.csv']
                 plugin = AwsSageMakerTrain()
@@ -30,7 +30,7 @@ class TestTrainingAdapter(unittest.TestCase):
                 self.assertTrue(response.size == 15)
 
     def test_awssagemaker_folder(self):
-         with mock.patch('mlctlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
+         with mock.patch('mlsriracha.plugins.awssagemaker.train.Path.mkdir', autospec=True) as mock_mkdir:
                 mock_mkdir.return_value = True
                 plugin = AwsSageMakerTrain()
                
@@ -39,7 +39,7 @@ class TestTrainingAdapter(unittest.TestCase):
                 self.assertTrue(response == '/opt/ml/model/model.pkl')
 
     def test_azureml_plugin(self):
-        with mock.patch('mlctlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
+        with mock.patch('mlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
             mock_mkdir.return_value = True
             plugin = AzureMlTrain()
         
@@ -47,8 +47,8 @@ class TestTrainingAdapter(unittest.TestCase):
         self.assertTrue(response)
 
     def test_azureml_data(self):
-         with mock.patch('mlctlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
-            with mock.patch('mlctlsriracha.plugins.azureml.train.os.environ.get', autospec=True) as mock_env:
+         with mock.patch('mlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
+            with mock.patch('mlsriracha.plugins.azureml.train.os.environ.get', autospec=True) as mock_env:
                 mock_mkdir.return_value = True
                 mock_env.return_value = './static/data/data.csv'
                 plugin = AzureMlTrain()
@@ -58,7 +58,7 @@ class TestTrainingAdapter(unittest.TestCase):
                 self.assertTrue(response.size == 15)
 
     def test_azureml_folder(self):
-         with mock.patch('mlctlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
+         with mock.patch('mlsriracha.plugins.azureml.train.Path.mkdir', autospec=True) as mock_mkdir:
                 mock_mkdir.return_value = True
                 plugin = AzureMlTrain()
                

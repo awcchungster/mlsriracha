@@ -6,7 +6,7 @@ from google.cloud import storage
 from google.cloud.storage.blob import Blob
 from io import StringIO
 
-from mlctlsriracha.interfaces.train import TrainInterface
+from mlsriracha.interfaces.train import TrainInterface
 
 class GcpVertexTrain(TrainInterface):
 

@@ -3,7 +3,7 @@ import os
 import glob
 from pathlib import Path
 
-from mlctlsriracha.interfaces.train import TrainInterface
+from mlsriracha.interfaces.train import TrainInterface
 
 class AwsSageMakerTrain(TrainInterface):
 

@@ -3,7 +3,7 @@ from pathlib import Path
 from google.cloud import storage
 from google.cloud.storage.blob import Blob
 
-from mlctlsriracha.interfaces.predict import PredictInterface
+from mlsriracha.interfaces.predict import PredictInterface
 
 class GcpVertexPredict(PredictInterface):
 

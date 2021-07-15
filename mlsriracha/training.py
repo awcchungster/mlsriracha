@@ -28,8 +28,17 @@ class TrainingAdapter:
     def input_as_dataframe(self, channel: str):
         return self.provider_obj.input_as_dataframe(channel=channel)
 
-    def log_artifact(self, filename: str):
+    def artifact_path(self, filename: str):
         return self.provider_obj.log_artifact(filename)
+
+    def log_param(self, params):
+        pass
+
+    def log_artifact(self, object, type='model'):
+        pass
+
+    def log_metric(self, params):
+        pass 
 
     def finish(self):
         return self.provider_obj.finish()
