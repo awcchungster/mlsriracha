@@ -2,11 +2,18 @@ from mlsriracha.interfaces.metadata import MetadataInterface
 
 class MlFlowMetadata(MetadataInterface):
 
+<<<<<<< HEAD
     def __init__(self, run_name, experiment_name):
         print('Selected MLFlow profile')
         mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
         mlflow.start_run(run_name=run_name)
         mlflow.set_experiment(experiment_name)
+=======
+    def __init__(self, run_name):
+        print('Selected MLFlow profile')
+        mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
+        mlflow.start_run(run_name=run_name)
+>>>>>>> 8e7e9cf91c3144ba5c0d43e436215badd8f90c12
         mlflow.set_tag('mlsriracha', '0.0.1')
 
     def log_param(params):
