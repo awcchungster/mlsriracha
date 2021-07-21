@@ -1,40 +1,43 @@
+import mlflow
+import os 
+
 from mlsriracha.interfaces.metadata import MetadataInterface
+
+# conversion to MLFlow required artifact type for model inference
+class ModelWrapper(mlflow.pyfunc.PythonModel):
+    def __init__(self, model):
+        self.model = model
+        
+    def predict(self, context, model_input):
+        return self.model.predict_proba(model_input)[:,1]
 
 class MlFlowMetadata(MetadataInterface):
 
-<<<<<<< HEAD
-    def __init__(self, run_name, experiment_name):
+    def __init__(self):
         print('Selected MLFlow profile')
-        mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
-        mlflow.start_run(run_name=run_name)
-        mlflow.set_experiment(experiment_name)
-=======
-    def __init__(self, run_name):
-        print('Selected MLFlow profile')
-        mlflow.set_tracking_uri(os.environ['MLFLOW_TRACKING_URI'])
-        mlflow.start_run(run_name=run_name)
->>>>>>> 8e7e9cf91c3144ba5c0d43e436215badd8f90c12
+        mlflow.set_tracking_uri(os.environ['sriracha_mlflow_tracking_uri'])
+        os.environ['MLFLOW_TRACKING_URI'] = os.environ['sriracha_mlflow_tracking_uri']
+
+        # assumes user leverages outside MLFLow environment,
+        # delete azure environment mlflow run id
+        if os.environ.get('MLFLOW_RUN_ID') is not None:
+            del os.environ['MLFLOW_RUN_ID']
+
+        mlflow.set_experiment(os.environ['sriracha_experiment_name'])
+        mlflow.start_run(run_name=os.environ['sriracha_run_name'])
         mlflow.set_tag('mlsriracha', '0.0.1')
 
-    def log_param(params):
+    def log_param(self, params):
         for key, value in params.items():
             print('Params: ', key, ': ', value)
             mlflow.log_param(key, value)
 
-    def log_metric(params):
+    def log_metric(self, params):
         mlflow.log_metrics(params) 
 
-    # conversion to MLFlow required artifact type for model inference
-    class ModelWrapper(mlflow.pyfunc.PythonModel):
-        def __init__(self, model):
-            self.model = model
-            
-        def predict(self, context, model_input):
-            return self.model.predict_proba(model_input)[:,1]
-
-    def log_artifact(object, type='model'):
+    def log_artifact(self, object, type='model'):
         mlflow_model = ModelWrapper(object)
-        mlflow.pyfunc.log_model(artifact_path=run_name, python_model=mlflow_model)
+        mlflow.pyfunc.log_model(artifact_path=os.environ['sriracha_run_name'], python_model=mlflow_model)
         pass
 
     def finish():

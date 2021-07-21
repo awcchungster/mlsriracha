@@ -1,6 +1,6 @@
-from mlctlsriracha.plugins.azureml.predict import AzureMlPredict
-from mlctlsriracha.plugins.gcpvertex.predict import GcpVertexPredict
-from mlctlsriracha.plugins.awssagemaker.predict import AwsSageMakerPredict
+from mlsriracha.plugins.azureml.predict import AzureMlPredict
+from mlsriracha.plugins.gcpvertex.predict import GcpVertexPredict
+from mlsriracha.plugins.awssagemaker.predict import AwsSageMakerPredict
 
 class PredictAdapter:
     def __init__(self, provider: str):

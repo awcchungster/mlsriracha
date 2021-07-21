@@ -27,9 +27,9 @@ class AzureMlTrain(TrainInterface):
 
         # channel --> environmental variable names
         data_directories = {
-            'training': "training-data",
-            'validation': "validation-data",
-            'testing': "testing-data"
+            'training': "AZURE_ML_INPUT_training",
+            'validation': "AZURE_ML_INPUT_validation",
+            'testing': "AZURE_ML_INPUT_testing"
         }
 
         if channel in data_directories.keys():
