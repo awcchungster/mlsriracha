@@ -1,7 +1,7 @@
 from setuptools import find_packages, setup
 setup(
     name='mlsriracha',
-    version='0.0.1',
+    version='0.0.2',
     description='A project to abstract the boilerplate required to deploy jobs in MLOps systems',
     author='Alex Chung',
     author_email='alex@socialg.tech',
