@@ -17,6 +17,21 @@ class GcpVertexTrain(TrainInterface):
         print('Selected GCP Vertex profile')
         Path('/opt/ml/model/').mkdir(parents=True, exist_ok=True)
 
+    def get_hyperparameters(self):
+        envs = {}
+        for k, v in os.environ.items():
+            if k.startswith('sriracha_hp_'):
+                envs[k.replace('sriracha_hp_', '')] = v
+        return envs
+
+
+    def get_env_vars(self):
+        envs = {}
+        for k, v in os.environ.items():
+            if k.startswith('sriracha_'):
+                envs[k.replace('sriracha_', '')] = v
+        return envs
+
     def input_as_dataframe(self, channel='training'):
         """
         The function returns a dataframe for the input channel artifacts.

@@ -9,7 +9,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'google-cloud-storage>=1.40.0',
-        'mlflow==1.19.0',
+        'mlflow-skinny==1.19.0',
         'pandas==1.1.5',
         'boto3==1.18.1' 
     ],

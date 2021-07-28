@@ -1,3 +1,5 @@
+import pickle
+
 from mlsriracha.plugins.azureml.train import AzureMlTrain
 from mlsriracha.plugins.gcpvertex.train import GcpVertexTrain
 from mlsriracha.plugins.awssagemaker.train import AwsSageMakerTrain
@@ -16,10 +18,12 @@ class TrainingAdapter:
             print('No providers were passed to sriracha, disabling in this run.')
             return
         elif providers.find(',') == -1:
-            providers += ','
+            providers = [providers]
+        else:
+            providers = providers.split(',')
 
         # get list of providers added
-        for provider in providers.split(','):
+        for provider in providers:
             
             try: provider
             except NameError: 
@@ -47,7 +51,12 @@ class TrainingAdapter:
 
             else:
                 raise RuntimeError(f'{provider} is not a valid provider')
-        
+    
+    def get_hyperparameters(self):
+        return self.provider_obj.get_hyperparameters()
+
+    def get_env_vars(self):
+        return self.provider_obj.get_env_vars()
             
     def input_as_dataframe(self, channel: str):
         return self.provider_obj.input_as_dataframe(channel=channel)
@@ -59,9 +68,13 @@ class TrainingAdapter:
         for metadata_obj in self.metadata_objs:
             metadata_obj.log_param(params)
 
-    def log_artifact(self, object, type='model'):
+    def log_artifact(self, artifact_object, artifact_type='model'):
+        if artifact_type == 'model': 
+            with open(self.artifact_path(filename='model.pkl'), 'wb') as stream:
+                pickle.dump(artifact_object, stream)
+
         for metadata_obj in self.metadata_objs:
-            metadata_obj.log_artifact(object, type)
+            metadata_obj.log_artifact(artifact_object, artifact_type)
 
     def log_metric(self, params):
         for metadata_obj in self.metadata_objs:

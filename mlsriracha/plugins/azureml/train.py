@@ -10,6 +10,37 @@ class AzureMlTrain(TrainInterface):
         print('Using Azure ML Sriracha profile')
         Path('./outputs/model').mkdir(parents=True, exist_ok=True)
 
+    def get_hyperparameters(self):
+        envs = {}
+        for k, v in os.environ.items():
+            if k.startswith('sriracha_hp_'):
+                try: 
+                    # Azure requires all env to be strings, so return as num if parseable
+                    value = float(v)   # Type-casting the string to `float`.
+                    if value.is_integer():
+                        value = int(value)
+                except ValueError:
+                    value = v
+
+                envs[k.replace('sriracha_hp_', '')] = value
+        return envs
+
+
+    def get_env_vars(self):
+        envs = {}
+        for k, v in os.environ.items():
+            if k.startswith('sriracha_'):
+                try: 
+                    # Azure requires all env to be strings, so return as num if parseable
+                    value = float(v)   # Type-casting the string to `float`.
+                    if value.is_integer():
+                        value = int(value)
+                except ValueError:
+                    value = v
+
+                envs[k.replace('sriracha_', '')] = value
+        return envs
+
     def input_as_dataframe(self, channel='training'):
         """
         The path to input artifacts.

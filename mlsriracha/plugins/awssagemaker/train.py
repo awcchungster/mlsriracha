@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import glob
 from pathlib import Path
+import json
 
 from mlsriracha.interfaces.train import TrainInterface
 
@@ -10,6 +11,39 @@ class AwsSageMakerTrain(TrainInterface):
     def __init__(self):
         print('Selected AWS SageMaker ML profile')
         Path('/opt/ml/model').mkdir(parents=True, exist_ok=True)
+
+    def get_hyperparameters(self):
+        # try:
+        with open(os.path.join(os.sep, 'opt', 'ml', 'input', 'config', 'hyperparameters.json')) as json_file:
+            
+            json_obj = json.load(json_file)
+            # print('hyperparameters.json: ' + json.dumps(json_obj))
+            data = {}
+            for k, v in json_obj.items():
+                try: 
+                    value = float(v)   # Type-casting the string to `float`.
+                    if value.is_integer():
+                        value = int(value)
+                except ValueError:
+                    value = v
+                data[k] = value
+            return data
+        # except Exception as inst:
+        #     print(inst)
+        #     return {}
+
+    def get_env_vars(self):
+        envs = {}
+        for k, v in os.environ.items():
+            if k.startswith('sriracha_'):
+                try: 
+                    value = float(v)   # Type-casting the string to `float`.
+                    if value.is_integer():
+                        value = int(value)
+                except ValueError:
+                    value = v
+                envs[k.replace('sriracha_', '')] = value
+        return envs
 
     def input_as_dataframe(self, channel='training'):
         """
