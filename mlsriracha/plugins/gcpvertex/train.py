@@ -93,7 +93,7 @@ class GcpVertexTrain(TrainInterface):
                 # assumes CSV files
                 s=str(blob.download_as_bytes(),'utf-8')
                 data = StringIO(s) 
-                df=pd.read_csv(data)
+                df=pd.read_csv(data, index_col=0)
                 fileBytes.append(df)
 
             frame = pd.concat(fileBytes, axis=0, ignore_index=True)     
