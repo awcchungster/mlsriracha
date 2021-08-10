@@ -1,9 +1,9 @@
 import pickle
 
-from mlsriracha.plugins.awssagemaker.processing import AwsSageMakerProcessing
+from mlsriracha.plugins.awssagemaker.process import AwsSageMakerProcess
 from mlsriracha.plugins.mlflow.metadata import MlFlowMetadata
 
-class JobAdapter:
+class ProcessAdapter:
     def __init__(self,
         providers):
 
@@ -29,7 +29,7 @@ class JobAdapter:
 
             if provider.lower() == 'awssagemaker':
                 print('Using AWS SageMaker as a provider')
-                self.provider_obj = AwsSageMakerProcessing()
+                self.provider_obj = AwsSageMakerProcess()
                 self.provider_name = provider.lower()
 
             elif provider.lower() == 'mlflow':

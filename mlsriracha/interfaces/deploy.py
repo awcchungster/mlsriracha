@@ -1,5 +1,5 @@
 
-class PredictInterface:
+class DeployInterface:
     def init(self, provider: str):
         """Load the model."""
         pass

@@ -1,8 +1,8 @@
 import os
 
-from mlsriracha.interfaces.predict import PredictInterface
+from mlsriracha.interfaces.deploy import DeployInterface
 
-class AzureMlPredict(PredictInterface):
+class AzureMlDeploy(DeployInterface):
 
     def __init__(self):
         print('Selected Azure ML profile')

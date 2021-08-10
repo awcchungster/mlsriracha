@@ -4,9 +4,9 @@ import glob
 from pathlib import Path
 import json
 
-from mlsriracha.interfaces.processing import ProcessingJobInterface
+from mlsriracha.interfaces.process import ProcessInterface
 
-class AwsSageMakerProcessing(ProcessingJobInterface):
+class AwsSageMakerProcess(ProcessInterface):
 
     def __init__(self):
         print('Selected AWS SageMaker ML profile')

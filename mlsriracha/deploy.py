@@ -2,7 +2,7 @@ from mlsriracha.plugins.azureml.predict import AzureMlPredict
 from mlsriracha.plugins.gcpvertex.predict import GcpVertexPredict
 from mlsriracha.plugins.awssagemaker.predict import AwsSageMakerPredict
 
-class PredictAdapter:
+class DeployAdapter:
     def __init__(self, provider: str):
         self.provider_name = provider.lower()
 

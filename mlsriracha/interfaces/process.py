@@ -1,6 +1,6 @@
 
 import pandas as pd
-class ProcessingJobInterface:
+class ProcessInterface:
     def init(self):
         """Load the model."""
         pass

@@ -3,9 +3,10 @@ import pickle
 from mlsriracha.plugins.azureml.train import AzureMlTrain
 from mlsriracha.plugins.gcpvertex.train import GcpVertexTrain
 from mlsriracha.plugins.awssagemaker.train import AwsSageMakerTrain
+from mlsriracha.plugins.kubernetes.train import KubernetesTrain
 from mlsriracha.plugins.mlflow.metadata import MlFlowMetadata
 
-class TrainingAdapter:
+class TrainAdapter:
     def __init__(self,
         providers):
 
@@ -44,6 +45,11 @@ class TrainingAdapter:
             elif provider.lower() == 'awssagemaker':
                 print('Using AWS SageMaker as a provider')
                 self.provider_obj = AwsSageMakerTrain()
+                self.provider_name = provider.lower()
+            
+            elif provider.lower() == 'kubernetes':
+                print('Using Kubernetes as a provider')
+                self.provider_obj = KubernetesTrain()
                 self.provider_name = provider.lower()
 
             elif provider.lower() == 'mlflow':
