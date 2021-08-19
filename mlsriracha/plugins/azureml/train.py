@@ -66,7 +66,7 @@ class AzureMlTrain(TrainInterface):
         if channel in data_directories.keys():
             azure_mount_file = os.environ.get(data_directories[channel])
             print(f'azure_mount_file={azure_mount_file}')
-            data = pd.read_csv(azure_mount_file, index_col=0)
+            data = pd.read_csv(azure_mount_file)
             return data
 
         else:
