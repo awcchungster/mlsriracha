@@ -59,6 +59,9 @@ class TrainAdapter:
                 raise RuntimeError(f'{provider} is not a valid provider')
     
     def get_hyperparameters(self):
+        """
+        Returns the hyperparameters passed into the mlsriracha runtime
+        """
         return self.provider_obj.get_hyperparameters()
 
     def get_env_vars(self):

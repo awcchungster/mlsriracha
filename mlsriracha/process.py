@@ -3,7 +3,7 @@ import pickle
 from mlsriracha.plugins.awssagemaker.process import AwsSageMakerProcess
 from mlsriracha.plugins.mlflow.metadata import MlFlowMetadata
 
-class ProcessAdapter:
+class JobAdapter:
     def __init__(self,
         providers):
 
