@@ -3,9 +3,9 @@ from pathlib import Path
 from google.cloud import storage
 from google.cloud.storage.blob import Blob
 
-from mlsriracha.interfaces.predict import PredictInterface
+from mlsriracha.interfaces.deploy import DeployInterface
 
-class GcpVertexPredict(PredictInterface):
+class GcpVertexDeploy(DeployInterface):
 
     def __init__(self):
         print('Selected GCP Vertex profile')

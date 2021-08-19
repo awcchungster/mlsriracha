@@ -1,8 +1,8 @@
-from mlsriracha.plugins.azureml.predict import AzureMlPredict
-from mlsriracha.plugins.gcpvertex.predict import GcpVertexPredict
-from mlsriracha.plugins.awssagemaker.predict import AwsSageMakerPredict
+from mlsriracha.plugins.azureml.deploy import AzureMlDeploy
+from mlsriracha.plugins.gcpvertex.deploy import GcpVertexDeploy
+from mlsriracha.plugins.awssagemaker.deploy import AwsSageMakerDeploy
 
-class PredictAdapter:
+class DeployAdapter:
     def __init__(self, provider: str):
         self.provider_name = provider.lower()
 
@@ -13,13 +13,13 @@ class PredictAdapter:
         
         if provider.lower() == 'azureml':
             print('Using Azure ML as a provider')
-            self.provider_obj = AzureMlPredict()
+            self.provider_obj = AzureMlDeploy()
         elif provider.lower() == 'gcpvertex':
             print('Using GCP Vertex as a provider')
-            self.provider_obj = GcpVertexPredict()
+            self.provider_obj = GcpVertexDeploy()
         elif provider.lower() == 'awssagemaker':
             print('Using AWS SageMaker as a provider')
-            self.provider_obj = AwsSageMakerPredict()
+            self.provider_obj = AwsSageMakerDeploy()
         else:
             raise RuntimeError(f'{str} is not a valid provider')
 
